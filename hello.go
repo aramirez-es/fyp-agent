@@ -10,6 +10,8 @@ import (
     "crypto/tls"
     "crypto/x509"
     "bytes"
+//    "go/build"
+    "runtime"
 )
 
 func getExternalIp() string {
@@ -40,14 +42,14 @@ func main() {
     var hostname, _ = os.Hostname()
     var ip = getExternalIp()
     var uuid = newUUID()
+    var cpus = runtime.NumCPU();
 
 //    var i, _ = net.Interfaces()
 //    for _, b := range i {
 //        fmt.Println(b.HardwareAddr)
 //    }
 
-    body := []byte(fmt.Sprintf(`{"id":"%s", "hostname":"%s", "ip":"%s"}`, uuid, hostname, ip))
-    fmt.Println(body)
+    body := []byte(fmt.Sprintf(`{"id":"%s", "hostname":"%s", "ip":"%s", "cpus":"%d"}`, uuid, hostname, ip, cpus))
 
     pem, _ := ioutil.ReadFile("ca.cert.pem")
     pool := x509.NewCertPool()
