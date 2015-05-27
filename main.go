@@ -8,8 +8,8 @@ import (
 func main() {
     system.SendSystemInformation()
 
-    sendSystemInformationInterval := time.NewTicker(5 * time.Second)
-    healthCheckInterval := time.NewTicker(10 * time.Second)
+    sendSystemInformationInterval := time.NewTicker(24 * time.Hour)
+    healthCheckInterval := time.NewTicker(30 * time.Second)
 
     for {
         select {
