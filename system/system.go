@@ -3,6 +3,7 @@ package system
 import (
     "fmt"
     "os"
+    "os/user"
     "net/http"
     "io/ioutil"
     "strings"
@@ -31,17 +32,26 @@ func getExternalIp() string {
 }
 
 func getSystemUUID() string {
+    var uuidFile = ".machineUuid"
+    var user, _ = user.Current()
+    var userHomeDir = user.HomeDir
+    var uuid string = ""
 
-//    addresses, _ := net.Interfaces()
-//    for _, iface := range addresses {
-//        fmt.Println(iface.HardwareAddr)
-//    }
-
-    out, err := exec.Command("uuidgen").Output()
+    var file, err = ioutil.ReadFile(fmt.Sprintf("%s/%s", userHomeDir, uuidFile))
     if err != nil {
-        return ""
+        // todo: cross platform.
+        out, err := exec.Command("uuidgen").Output()
+        if err != nil {
+            uuid = ""
+        } else {
+            uuid = strings.TrimSpace(string(out))
+        }
+        ioutil.WriteFile(fmt.Sprintf("%s/%s", userHomeDir, uuidFile), []byte(uuid), 0644)
+    } else {
+        uuid = strings.TrimSpace(string(file))
     }
-    return strings.TrimSpace(string(out))
+
+    return uuid
 }
 
 func getTotalHdd() uint64 {
@@ -100,7 +110,7 @@ func SendSystemInformation() {
     } else {
         fmt.Println("Ok")
         defer resp.Body.Close()
-        body, _ := ioutil.ReadAll(resp.Body)
-        fmt.Println(body)
+//        body, _ := ioutil.ReadAll(resp.Body)
+//        fmt.Println(body)
     }
 }
