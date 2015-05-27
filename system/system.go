@@ -1,4 +1,4 @@
-package main
+package system
 
 import (
     "fmt"
@@ -38,29 +38,28 @@ func newUUID() string {
     return strings.TrimSpace(string(out))
 }
 
-func main() {
+func SendSystemInformation() {
+
     var hostname, _ = os.Hostname()
     var ip = getExternalIp()
     var uuid = newUUID()
     var cpus = runtime.NumCPU();
 
-//    var i, _ = net.Interfaces()
-//    for _, b := range i {
-//        fmt.Println(b.HardwareAddr)
-//    }
+    //    var i, _ = net.Interfaces()
+    //    for _, b := range i {
+    //        fmt.Println(b.HardwareAddr)
+    //    }
 
     body := []byte(fmt.Sprintf(`{"id":"%s", "hostname":"%s", "ip":"%s", "cpus":"%d"}`, uuid, hostname, ip, cpus))
 
-    pem, _ := ioutil.ReadFile("ca.cert.pem")
     pool := x509.NewCertPool()
-    pool.AppendCertsFromPEM([]byte(pem))
+    pool.AppendCertsFromPEM(caCertificate)
 
     tr := &http.Transport{
         TLSClientConfig:    &tls.Config{RootCAs: pool},
         DisableCompression: true,
     }
     client := &http.Client{Transport: tr}
-//    resp, err := client.Post("https://api.pfc.aramirez.es/systems", body, nil)
     req, err := http.NewRequest("POST", "https://api.pfc.aramirez.es/systems", bytes.NewBuffer(body))
     req.Header.Set("Content-Type", "application/json")
     resp, err := client.Do(req)
