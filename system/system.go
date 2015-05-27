@@ -10,8 +10,8 @@ import (
     "crypto/tls"
     "crypto/x509"
     "bytes"
-//    "go/build"
     "runtime"
+    "github.com/cloudfoundry/gosigar"
 )
 
 func getExternalIp() string {
@@ -30,7 +30,13 @@ func getExternalIp() string {
     return strings.TrimSpace(string(contents))
 }
 
-func newUUID() string {
+func getSystemUUID() string {
+
+//    addresses, _ := net.Interfaces()
+//    for _, iface := range addresses {
+//        fmt.Println(iface.HardwareAddr)
+//    }
+
     out, err := exec.Command("uuidgen").Output()
     if err != nil {
         return ""
@@ -38,19 +44,43 @@ func newUUID() string {
     return strings.TrimSpace(string(out))
 }
 
+func getTotalHdd() uint64 {
+    fslist := sigar.FileSystemList{}
+    fslist.Get()
+
+    var totalHdd uint64 = 0
+
+    for _, fs := range fslist.List {
+        dir_name := fs.DirName
+        usage := sigar.FileSystemUsage{}
+
+        usage.Get(dir_name)
+        totalHdd += usage.Total
+    }
+
+    return totalHdd * 1024
+}
+
+func getTotalRam() uint64 {
+    mem := sigar.Mem{}
+    mem.Get()
+
+    return mem.Total
+}
+
 func SendSystemInformation() {
 
     var hostname, _ = os.Hostname()
+    var operatingSystem = runtime.GOOS
     var ip = getExternalIp()
-    var uuid = newUUID()
+    var uuid = getSystemUUID()
     var cpus = runtime.NumCPU();
+    var ram = getTotalRam();
+    var hdd = getTotalHdd();
 
-    //    var i, _ = net.Interfaces()
-    //    for _, b := range i {
-    //        fmt.Println(b.HardwareAddr)
-    //    }
-
-    body := []byte(fmt.Sprintf(`{"id":"%s", "hostname":"%s", "ip":"%s", "cpus":"%d"}`, uuid, hostname, ip, cpus))
+    body := []byte(
+        fmt.Sprintf(
+            `{"id":"%s", "hostname":"%s", "ip":"%s", "cpus":"%d", "ram": "%d", "hdd": "%d", "os":"%s"}`, uuid, hostname, ip, cpus, ram, hdd, operatingSystem))
 
     pool := x509.NewCertPool()
     pool.AppendCertsFromPEM(caCertificate)
