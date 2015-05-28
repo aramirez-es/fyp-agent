@@ -99,24 +99,22 @@ func SendSystemInformation() {
     var hostname, _ = os.Hostname()
     var operatingSystem = runtime.GOOS
     var ip = getExternalIp()
-    var uuid = getSystemUUID()
+    var machineUuid = getSystemUUID()
     var cpus = runtime.NumCPU();
     var ram = getTotalRam();
     var hdd = getTotalHdd();
 
-    body := []byte(
-        fmt.Sprintf(
-            `{"id":"%s", "hostname":"%s", "ip":"%s", "cpus":"%d", "ram": "%d", "hdd": "%d", "os":"%s"}`, uuid, hostname, ip, cpus, ram, hdd, operatingSystem))
+    var bodyInJson = fmt.Sprintf(
+        `{"id":"%s", "hostname":"%s", "ip":"%s", "cpus":"%d", "ram": "%d", "hdd": "%d", "os":"%s"}`, machineUuid, hostname, ip, cpus, ram, hdd, operatingSystem)
+    body := []byte(bodyInJson)
 
     resp, err := performRequest("POST", "https://api.pfc.aramirez.es/systems", body)
 
     if err != nil {
-        fmt.Println("Error")
+        fmt.Println("Error sending system information update.")
         fmt.Println(err)
     } else {
-        fmt.Println("Ok")
+        fmt.Println(fmt.Sprintf("System information sent for uuid \"%s\" with info '%s'", machineUuid, bodyInJson))
         defer resp.Body.Close()
-//        body, _ := ioutil.ReadAll(resp.Body)
-//        fmt.Println(body)
     }
 }

@@ -46,19 +46,17 @@ func SendHealthCheck() {
     usedRam := getUsedRam()
     usedHdd := getUsedHdd()
 
-    body := []byte(
-        fmt.Sprintf(
-            `{"id":"%s", "cpu_load":"%f", "used_ram":"%d", "used_hdd":"%d"}`, machineUuid, cpuLoad, usedRam, usedHdd))
+    bodyInJson := fmt.Sprintf(
+        `{"id":"%s", "cpu_load":"%f", "used_ram":"%d", "used_hdd":"%d"}`, machineUuid, cpuLoad, usedRam, usedHdd)
+    body := []byte(bodyInJson)
 
     resp, err := performRequest("POST", fmt.Sprintf("https://api.pfc.aramirez.es/systems/%s/healths", machineUuid), body)
 
     if err != nil {
-        fmt.Println("Error")
+        fmt.Println("Error sending health check.")
         fmt.Println(err)
     } else {
-        fmt.Println("Ok")
+        fmt.Println(fmt.Sprintf("Healthcheck sent for uuid \"%s\" with info '%s'", machineUuid, bodyInJson))
         defer resp.Body.Close()
-        //        body, _ := ioutil.ReadAll(resp.Body)
-        //        fmt.Println(body)
     }
 }
