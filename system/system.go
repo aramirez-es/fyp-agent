@@ -78,6 +78,22 @@ func getTotalRam() uint64 {
     return mem.Total
 }
 
+func performRequest(httpMethod string, url string , body []byte) (*http.Response, error) {
+    pool := x509.NewCertPool()
+    pool.AppendCertsFromPEM(caCertificate)
+
+    tr := &http.Transport{
+        TLSClientConfig:    &tls.Config{RootCAs: pool},
+        DisableCompression: true,
+    }
+
+    client := &http.Client{Transport: tr}
+
+    req, _ := http.NewRequest(httpMethod, url, bytes.NewBuffer(body))
+    req.Header.Set("Content-Type", "application/json")
+    return client.Do(req)
+}
+
 func SendSystemInformation() {
 
     var hostname, _ = os.Hostname()
@@ -92,17 +108,7 @@ func SendSystemInformation() {
         fmt.Sprintf(
             `{"id":"%s", "hostname":"%s", "ip":"%s", "cpus":"%d", "ram": "%d", "hdd": "%d", "os":"%s"}`, uuid, hostname, ip, cpus, ram, hdd, operatingSystem))
 
-    pool := x509.NewCertPool()
-    pool.AppendCertsFromPEM(caCertificate)
-
-    tr := &http.Transport{
-        TLSClientConfig:    &tls.Config{RootCAs: pool},
-        DisableCompression: true,
-    }
-    client := &http.Client{Transport: tr}
-    req, err := http.NewRequest("POST", "https://api.pfc.aramirez.es/systems", bytes.NewBuffer(body))
-    req.Header.Set("Content-Type", "application/json")
-    resp, err := client.Do(req)
+    resp, err := performRequest("POST", "https://api.pfc.aramirez.es/systems", body)
 
     if err != nil {
         fmt.Println("Error")
