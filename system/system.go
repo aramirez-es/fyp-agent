@@ -57,17 +57,15 @@ func getTotalHdd() uint64 {
     fslist := sigar.FileSystemList{}
     fslist.Get()
 
-    var totalHdd uint64 = 0
-
     for _, fs := range fslist.List {
         dir_name := fs.DirName
         usage := sigar.FileSystemUsage{}
 
         usage.Get(dir_name)
-        totalHdd += usage.Total
+        return usage.Total * 1024
     }
 
-    return totalHdd * 1024
+    return 0
 }
 
 func getTotalRam() uint64 {
@@ -107,7 +105,7 @@ func SendSystemInformation() {
         `{"id":"%s", "hostname":"%s", "ip":"%s", "cpus":"%d", "ram": "%d", "hdd": "%d", "os":"%s"}`, machineUuid, hostname, ip, cpus, ram, hdd, operatingSystem)
     body := []byte(bodyInJson)
 
-    resp, err := performRequest("POST", "https://api.pfc.aramirez.es/systems", body)
+    resp, err := performRequest("PUT", fmt.Sprintf("https://api.pfc.aramirez.es/systems/%s", machineUuid), body)
 
     if err != nil {
         fmt.Println("Error sending system information update.")
