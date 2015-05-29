@@ -13,6 +13,7 @@ import (
     "bytes"
     "runtime"
     "github.com/cloudfoundry/gosigar"
+    "github.com/laher/goxc/core"
 )
 
 func getExternalIp() string {
@@ -33,8 +34,7 @@ func getExternalIp() string {
 
 func getSystemUUID() string {
     var uuidFile = ".machineUuid"
-    var user, _ = user.Current()
-    var userHomeDir = user.HomeDir
+    var userHomeDir = core.UserHomeDir()
     var uuid string = ""
 
     var file, err = ioutil.ReadFile(fmt.Sprintf("%s/%s", userHomeDir, uuidFile))
