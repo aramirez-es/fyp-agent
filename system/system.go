@@ -3,7 +3,6 @@ package system
 import (
     "fmt"
     "os"
-    "os/user"
     "net/http"
     "io/ioutil"
     "strings"
