@@ -3,6 +3,7 @@ package system
 import (
     "github.com/cloudfoundry/gosigar"
     "fmt"
+    "os"
 )
 
 func getUsedRam() uint64 {
@@ -53,10 +54,10 @@ func SendHealthCheck() {
     resp, err := performRequest("POST", fmt.Sprintf("https://api.pfc.aramirez.es/systems/%s/healths", machineUuid), body)
 
     if err != nil {
-        fmt.Println("Error sending health check.")
-        fmt.Println(err)
+        fmt.Println(os.Stderr, "Error sending health check.")
+        fmt.Println(os.Stderr, err)
     } else {
-        fmt.Println(fmt.Sprintf("Healthcheck sent for uuid \"%s\" with info '%s'", machineUuid, bodyInJson))
+        fmt.Println(os.Stdout, fmt.Sprintf("Healthcheck sent for uuid \"%s\" with info '%s'", machineUuid, bodyInJson))
         defer resp.Body.Close()
     }
 }

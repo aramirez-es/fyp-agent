@@ -108,10 +108,10 @@ func SendSystemInformation() {
     resp, err := performRequest("PUT", fmt.Sprintf("https://api.pfc.aramirez.es/systems/%s", machineUuid), body)
 
     if err != nil {
-        fmt.Println("Error sending system information update.")
-        fmt.Println(err)
+        fmt.Println(os.Stderr, "Error sending system information update.")
+        fmt.Println(os.Stderr, err)
     } else {
-        fmt.Println(fmt.Sprintf("System information sent for uuid \"%s\" with info '%s'", machineUuid, bodyInJson))
+        fmt.Println(os.Stdout, fmt.Sprintf("System information sent for uuid \"%s\" with info '%s'", machineUuid, bodyInJson))
         defer resp.Body.Close()
     }
 }
