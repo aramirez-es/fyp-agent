@@ -1,0 +1,67 @@
+#!/bin/bash
+
+NAME=pfcaramirezagent
+DESC="Agent that send system information besides periodical heart beat to central information collector."
+PIDFILE="/var/run/${NAME}.pid"
+LOGFILE="/var/log/${NAME}.log"
+
+DAEMON=/usr/bin/pfcaramirezagent
+DAEMON_OPTS=
+
+START_OPTS="--start --background --make-pidfile --pidfile ${PIDFILE} --exec ${DAEMON} ${DAEMON_OPTS}"
+STOP_OPTS="--stop --pidfile ${PIDFILE}"
+
+test -x $DAEMON || exit 0
+
+set -e
+
+start() {
+    echo -n "Starting ${DESC}: "
+    start-stop-daemon $START_OPTS $LOGFILE
+    echo "$NAME."
+}
+
+stop() {
+    echo -n "Stopping $DESC: "
+    start-stop-daemon $STOP_OPTS
+    echo "$NAME."
+    rm -f $PIDFILE
+}
+
+status() {
+    if [ -f $PIDFILE ] ; then
+            echo "Running"
+    else
+            echo "Stopped"
+    fi
+}
+
+restart() {
+    echo -n "Restarting $DESC: "
+    start-stop-daemon $STOP_OPTS
+    sleep 1
+    start-stop-daemon $START_OPTS >> $LOGFILE
+    echo "$NAME."
+}
+
+
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  status)
+        status
+        ;;
+  restart|force-reload)
+        restart
+        ;;
+  *)
+        N=/etc/init.d/$NAME
+        echo "Usage: $N {start|stop|restart|force-reload}" >&2
+        exit 1
+esac
+
+exit 0
