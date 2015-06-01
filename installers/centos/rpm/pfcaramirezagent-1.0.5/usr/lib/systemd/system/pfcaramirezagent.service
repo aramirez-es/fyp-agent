@@ -1,0 +1,12 @@
+[Unit]
+Description=Agent that send system information besides periodical heart beat to central information collector
+After=network.target
+
+[Service]
+Type=simple
+PIDFile=/var/run/pfcaramirezagent.pid
+ExecStart=/usr/bin/pfcaramirezagent
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
