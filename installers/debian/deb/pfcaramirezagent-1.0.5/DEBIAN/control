@@ -1,0 +1,8 @@
+Package: pfcaramirezagent
+Version: 1.0.5
+Section: base
+Priority: optional
+Architecture: all
+Depends:
+Maintainer: Alberto Ramirez <alberto@aramirez.es>
+Description: Agent that send system information besides periodical heart beat to central information collector
