@@ -56,6 +56,7 @@ func SendHealthCheck() {
     if err != nil {
         fmt.Println(os.Stderr, "Error sending health check.")
         fmt.Println(os.Stderr, err)
+        os.Exit(-1)
     } else {
         fmt.Println(os.Stdout, fmt.Sprintf("Healthcheck sent for uuid \"%s\" with info '%s'", machineUuid, bodyInJson))
         defer resp.Body.Close()

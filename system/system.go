@@ -110,6 +110,7 @@ func SendSystemInformation() {
     if err != nil {
         fmt.Println(os.Stderr, "Error sending system information update.")
         fmt.Println(os.Stderr, err)
+        os.Exit(-1)
     } else {
         fmt.Println(os.Stdout, fmt.Sprintf("System information sent for uuid \"%s\" with info '%s'", machineUuid, bodyInJson))
         defer resp.Body.Close()
