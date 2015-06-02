@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -e
+
+/bin/launchctl load "/Library/LaunchDaemons/org.pfc.aramirez.agent.plist"
+
+

@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -e
+
+if /bin/launchctl list "org.pfc.aramirez" &> /dev/null; then
+    /bin/launchctl unload "/Library/LaunchDaemons/org.pfc.aramirez.agent.plist"
+fi

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>org.pfc.aramirez.agent</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/local/bin/pfcaramirezagent</string>
+    </array>
+    <key>KeepAlive</key>
+    <dict>
+        <key>SuccessfulExit</key>
+        <false/>
+        <key>NetworkState</key>
+        <true/>
+    </dict>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>/var/log/org.pfc.aramirez/agent.log</string>
+    <key>StandardErrorPath</key>
+    <string>/var/log/org.pfc.aramirez/agent.log</string>
+</dict>
+</plist>
