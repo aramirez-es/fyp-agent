@@ -3,4 +3,4 @@
 
 The main purpose of this repository is to send periodically system's information to the server.
 
-It includes a custom CA certificated created to validate server side https.
+It includes a self-made Certificate Authority (CA) certificate, created in order to validate server side https.
